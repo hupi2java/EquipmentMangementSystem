@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<!-- 后缀名 -->
+	<constant name="struts.action.extension" value="do,action"/>
+	
+	<constant name="struts.ui.theme" value="simple"></constant>
+	
+	<package name="default" extends="struts-default">
+	
+		<!-- 配置自己的拦截器 ，实现用户过滤 -->
+		<interceptors>
+		<!--  
+		<interceptor name="loginInterceptor" class="com.hp.interceptor.LoginInterceptor"/>
+		-->
+		<interceptor name="checkPrivilege" class="com.hp.interceptor.CheckPrivilegeInterceptor"/>
+			<interceptor-stack name="myInterceptor">
+			<!--  
+				<interceptor-ref name="loginInterceptor">
+					<param name="excludeMethods">login,goLogin,goLoginUI,getDeparmentInfo</param>
+				</interceptor-ref>
+			-->
+				<interceptor-ref name="checkPrivilege">
+			 		<param name="excludeMethods">log_login,log_goLogin,log_goLoginUI,getDeparmentInfo</param>
+			 	</interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<!-- 定义默认的拦截器栈 -->
+		<default-interceptor-ref name="myInterceptor" />
+		
+		<global-results>
+			<result name="goLogin">/WEB-INF/jsp/public/LoginUI.jsp</result>
+			<result name="noPrivilegeError">/WEB-INF/jsp/public/errPrivilege.jsp</result>
+		</global-results>
+		
+		<action name="home_*" class="homeAction" method="{1}">
+			<result name="head">/WEB-INF/jsp/self/head.jsp</result>
+			<result name="left">/WEB-INF/jsp/self/left.jsp</result>
+			<result name="right">/WEB-INF/jsp/self/right.jsp</result>
+		</action>
+	
+		<action name="log_*" class="loginAction" method="{1}">
+			<result name="goLoginUI">/WEB-INF/jsp/public/LoginUI.jsp</result>
+			<result name="login">/WEB-INF/jsp/self/main.jsp</result>
+			<result name="goLogin">/WEB-INF/jsp/public/LoginUI.jsp</result>
+			<result name="logout">/WEB-INF/jsp/public/LoginUI.jsp</result>
+		</action>
+		
+		<action name="changePassword" class="changePasswordAction" method="goChangUI">
+			<result>/WEB-INF/jsp/self/user.jsp</result>
+		</action>
+		<action name="repassword" class="changePasswordAction" method="changePassword">
+			<result name="success">/WEB-INF/jsp/self/pwdChangeOk.jsp</result>
+			<result name="error">/WEB-INF/jsp/self/pwdChangerr.jsp</result>
+		</action>
+		
+		<action name="maintain_*" class="maintainAction" method="{1}">
+			<result name="goSelectUI">/WEB-INF/jsp/equipMaintain/select.jsp</result>
+			<result name="goMaintainUI">/WEB-INF/jsp/equipMaintain/maintainFrame.jsp</result>
+			<result name="goMaintainUIAction" type="chain">maintain_goMaintainUI</result>
+			<result name="goSecondMaintainUI">/WEB-INF/jsp/equipMaintain/secondMaintainFrame.jsp</result>
+			<result name="goMaintainItems">/WEB-INF/jsp/equipMaintain/maintain.jsp</result>
+			<result name="goMaintainItemsAction" type="chain">maintain_goMaintainItems</result>
+			<result name="goSecondMaintainUIAction" type="chain">maintain_goSecondMaintainUI</result>
+			<result name="goConfirmUI">/WEB-INF/jsp/equipMaintain/confirm.jsp</result>
+			<result name="queryConfirmObject">/WEB-INF/jsp/equipMaintain/confirm.jsp</result>
+			<result name="confirmOkUI">/WEB-INF/jsp/equipMaintain/confirm.jsp</result>
+			<result name="error">/WEB-INF/jsp/equipMaintain/select.jsp</result>
+		</action>
+		
+		<action name="query_*" class="queryFormAction" method="{1}">
+			<result name="goQueryUI">/WEB-INF/jsp/queryForm/queryList.jsp</result>
+			<result name="goEquipmentListUI">/WEB-INF/jsp/queryForm/queryList.jsp</result>
+			<result name="goDayFormUI">/WEB-INF/jsp/queryForm/dayForm.jsp</result>
+			<result name="goWeekFormUI">/WEB-INF/jsp/queryForm/weekForm.jsp</result>
+			<result name="goMonthFormUI">/WEB-INF/jsp/queryForm/monthForm.jsp</result>
+			<result name="goQuarterFormUI">/WEB-INF/jsp/queryForm/quarterForm.jsp</result>
+			<result name="goHalfYearFormUI">/WEB-INF/jsp/queryForm/halfYearForm.jsp</result>
+			<result name="goYearFormUI">/WEB-INF/jsp/queryForm/yearForm.jsp</result>
+		</action>
+		
+		<!-- AJAX -->
+		<action name="getInfo_*" class="getDepartment" method="{1}">
+		</action>
+		
+		<!-- 用户管理 -->
+		<action name="user_*" class="userAction" method="{1}">
+			<result name="goList">/WEB-INF/jsp/user/userList.jsp</result>
+			<result name="goAddUI">/WEB-INF/jsp/user/addUser.jsp</result>
+			<result name="add" type="redirectAction">user_goList</result>
+			<result name="delete" type="redirectAction">user_goList</result>
+			<result name="goEditUI">/WEB-INF/jsp/user/addUser.jsp</result>
+			<result name="edit" type="redirectAction">user_goList</result>
+			<result name="initPassword" type="redirectAction">user_goList</result>
+			<result name="setPrivilegeUI">/WEB-INF/jsp/user/setPrivilegeUI.jsp</result>
+			<result name="setPrivilege" type="redirectAction">user_goList</result>
+		</action>
+		
+		<!-- 设备管理 -->
+		<action name="equipment_*" class="equipmentAction" method="{1}">
+			<result name="goEqupimentList">/WEB-INF/jsp/equipment/equipmentList.jsp</result>
+			<result name="goAddUI">/WEB-INF/jsp/equipment/addEquipment.jsp</result>
+			<result name="add" type="redirectAction">equipment_goEqupimentList</result>
+			<result name="delete" type="redirectAction">equipment_goEqupimentList</result>
+			<result name="goEditUI">/WEB-INF/jsp/equipment/addEquipment.jsp</result>
+			<result name="edit" type="redirectAction">equipment_goEqupimentList</result>
+		</action>
+		
+		<!-- 机器管理 -->
+		<action name="machine_*" class="machineAction" method="{1}">
+			<result name="goMachineList">/WEB-INF/jsp/machine/machineList.jsp</result>
+			<result name="goAddUI">/WEB-INF/jsp/machine/addMachine.jsp</result>
+			<result name="add" type="redirectAction">machine_goMachineList</result>
+			<result name="delete" type="redirectAction">machine_goMachineList</result>
+			<result name="goEditUI">/WEB-INF/jsp/machine/addMachine.jsp</result>
+			<result name="edit" type="redirectAction">machine_goMachineList</result>
+		</action>
+		
+		<!-- 保养项目管理，与机器相关联 -->
+		<action name="maintainItems_*" class="maintainItemsAction" method="{1}">
+			<result name="goMaintainItemsUI">/WEB-INF/jsp/maintainItems/maintainItmsList.jsp</result>
+			<result name="goAddUI">/WEB-INF/jsp/maintainItems/addMaintainItems.jsp</result>
+			<result name="add" type="redirectAction">maintainItems_goMaintainItemsUI?machineId=%{machineId}</result>
+			<result name="delete" type="redirectAction">maintainItems_goMaintainItemsUI?machineId=%{machineId}</result>
+			<result name="goEditUI">/WEB-INF/jsp/maintainItems/addMaintainItems.jsp</result>
+			<result name="edit" type="redirectAction">maintainItems_goMaintainItemsUI?machineId=%{machineId}</result>
+		</action>
+		
+		
+		<!-- 部门管理 -->
+		<action name="department_*" class="departmentAction" method="{1}">
+			<result name="goDepartmentList">/WEB-INF/jsp/department/departmentList.jsp</result>
+			<result name="goAddUI">/WEB-INF/jsp/department/addDepartment.jsp</result>
+			<result name="add" type="redirectAction">department_goDepartmentList?id=%{parentId}</result>
+			<result name="goEditUI">/WEB-INF/jsp/department/addDepartment.jsp</result>
+			<result name="edit" type="redirectAction">department_goDepartmentList?id=%{parentId}</result>
+			<result name="delete" type="redirectAction">department_goDepartmentList?id=%{parentId}</result>	
+		</action>
+		
+		<!-- 线别管理 -->
+		<action name="line_*" class="lineAction" method="{1}">
+			<result name="goLineList">/WEB-INF/jsp/line/lineList.jsp</result>
+			<result name="goAddUI">/WEB-INF/jsp/line/addLine.jsp</result>
+			<result name="add" type="redirectAction">line_goLineList</result>
+			<result name="goEditUI">/WEB-INF/jsp/line/addLine.jsp</result>
+			<result name="edit" type="redirectAction">line_goLineList</result>
+			<result name="delete" type="redirectAction">line_goLineList</result>	
+		</action>
+		
+	</package>
+
+</struts>

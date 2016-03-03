@@ -1,0 +1,55 @@
+/* 登录页面 主div*/
+.login{
+	width: 100%;
+	
+	margin: 0 auto;
+}
+
+/*上面图片区域div*/
+.login .title{
+	width: 100%;
+	height: 200px;
+	float: left;
+}
+/*第一张图片*/
+.title .img1{
+	width: 20%;
+	height: 200px;
+	float: left;
+}
+/*第二张图片*/
+.title .img2{
+	width: 60%;
+	height: 50%;
+	float: left;
+}
+
+/*表单部分div*/
+.login .form{
+	width: 100%;
+	height: 300px;
+	float: left;	
+}
+/*表单左侧图片 目的站位  让表单居中*/
+.form .img3{
+	width: 35%;
+	height: 100%;
+	float: left;
+}
+
+/*表单table中的第一列元素*/
+.form .td1{
+	width: 80px;
+	color: blue;
+	font-size: 18px;
+	letter-spacing: 2px;/*字间距*/
+}
+/*表单中 table的行间距*/
+.form table{
+	border-collapse: separate;
+	border-spacing: 10px;
+}
+.form select,.form input{
+	width: 180px;
+	border: 2px solid #A0A0A0;
+}
